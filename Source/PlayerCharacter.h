@@ -1,7 +1,5 @@
-// Все предопределения класса AFroggyPlayer
-
+// Copyright 1998 - 2018 Epic Games, Inc.All Rights Reserved.
 #pragma once
-
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -22,45 +20,59 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+	/** Sensitivity of mouse */
+	float Sensitivity = 0.6f;
 
-	float Sensivity = 0.5f;
-	float WalkSpeed = 200.0f;
-	float CrouchSpeed = 120.0f;
-	float RunSpeed = 400.0f;
+	/** Speed of player */
+	const float WalkSpeed = 200.0f;
+	const float CrouchSpeed = 120.0f;
+	const float RunSpeed = 400.0f;
 
-	bool WantsToStandUp = false;
-	bool Crouched = false;
-	bool ShiftIsPressed;
+	/** Does the player want to stand */
+	bool bWantsToStandUp = false;
+	bool bCrouched = false;
+	bool bWantsToSprint = false;
 
+	/** Arrays needed to check if the character can stand up */
 	TArray<AActor*> ActorsToIgnore;
 	TArray<FHitResult> HitArray;
 
-	class UCameraComponent* CameraComponent;
-	UPROPERTY(EditAnywhere, Category = "Timeline")
-	class UTimelineComponent* TimelineComponent;
-	UPROPERTY(EditAnywhere, Category = "Timeline")
-	class UCurveFloat* CrouchCurveFloat;
+	/** Camera */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+		class UCameraComponent* CameraComponent;
 
-public:	
+	/** CurveFloat that determines which pattern the player will crouch with */
+	UPROPERTY(EditAnywhere, Category = Crouch)
+		class UCurveFloat* CrouchCurveFloat;
+
+	/** Timeline Component */
+	UPROPERTY(VisibleAnywhere, Category = Crouch)
+		class UTimelineComponent* TimelineComponent;
+
+public:
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	/** Movement functions */
 	UFUNCTION()
 		void MoveVertical(float Value);
 	UFUNCTION()
 		void MoveHorizontal(float Value);
 
+	/** Jump functions */
 	UFUNCTION()
 		void StartJump();
 	UFUNCTION()
 		void StopJump();
 
+	/** Camera movement functions */
 	UFUNCTION()
 		void PlayerCameraY(float Value);
 	UFUNCTION()
 		void PlayerCameraX(float Value);
 
+	/** Crouch Functions */
 	UFUNCTION()
 		void CrouchFinished();
 	UFUNCTION()
@@ -70,9 +82,9 @@ public:
 	void PlayerCrouch();
 	void PlayerUnCrouch();
 
+	/** Sprint Functions */
 	UFUNCTION()
 		void Sprint();
 	UFUNCTION()
 		void UnSprint();
-	
 };
